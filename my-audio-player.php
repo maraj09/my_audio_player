@@ -20,8 +20,8 @@
  *
  * Prefix:      map
  */
-require_once(plugin_dir_path(__FILE__)."./inc/metabox.php");
 require_once(plugin_dir_path(__FILE__)."./lib/codestar-framework/codestar-framework.php");
+require_once(plugin_dir_path(__FILE__)."./inc/metabox.php");
 defined( 'ABSPATH' ) || die( 'No script kiddies please!' );
 
 /**
@@ -108,7 +108,7 @@ function map_custom_submenu_page() {
 
 function map_submenu_page_callback() {
 	echo '<div class="wrap"><div id="icon-tools" class="icon32"></div>';
-	echo get_post_meta( 575, 'audio-file', true );
+	//var_dump( print_r( get_post_meta( 612, 'add_audio_' , true ))) ;
     echo '<h2>Developer</h2>
     <h2>Md Maraj Rashid</h2>
     <h3>Basic Web Developer</h3>';
@@ -122,17 +122,31 @@ add_action('admin_menu', 'map_custom_submenu_page');
 ////////////////////////////////////////////////////////
 function map_genarate_audio_shortcode($attr)
 {
-	// global $post;
-	// $post->post_type == 'myaudioplayer';
-	// echo get_post_meta( get_the_ID(), 'audio-file', true );
-	
-	
-	
+	if (!empty($attr['id'])) {
+		$id = $attr['id'];
+	}
+	$audio = get_post_meta( $id, 'add_audio_' , true );
+	$audio_url = $audio['audio-file'];
+	$audio_text = $audio['audio-text'];
+	$audio_repeat = $audio['audio-repeat'];
+	$audio_inline = $audio['audio-inline'];
+	$audio_dwn = $audio['audio-download'];
+	$audio_color = $audio['audio-color'];
+	$audio_shadow = $audio['audio-shadow'];
+	$audio_width = $audio['audio-width'];
+	$audio_btn = $audio['audio-btn'];
+	echo $audio_color;
 	ob_start();
 	?>
-	<a id="m1" class="  audio {ogg:'audio/allegro.ogg', loop:true, inLine:true, downloadable:true}" href="http://pupunzi.open-lab.com/wp-content/uploads/2013/03/Pietro-Bicocchi-Allegro.mp3">Pietro Bicocchi - Allegro 2013</a>
-            <button id="play" >play</button>
-            <button id="stop" >stop</button>
+	<a id="m1" class="  audio { loop:<?php  echo ((1 == $audio_repeat) ? 'true' : 'false') ?>  , inLine:<?php  echo ((0 == $audio_inline) ? 'true' : 'false') ?>, downloadable:<?php  echo ((1 == $audio_dwn) ? 'true' : 'false') ?>, skin:'<?php  echo $audio_color;?>', addShadow:<?php  echo ((1 == $audio_shadow) ? 'true' : 'false') ?>,width:<?php  echo $audio_width;?>  }" href="<?php echo esc_attr( $audio_url) ?>"><?php echo ( $audio_text) ?></a>
+			<?php
+				if (1 == $audio_btn) { ?>
+					<button id="play" >play</button>
+                    <button id="stop" >stop</button>
+			<?php }
+			
+			?>
+            
 	<?php
 	
 	return ob_get_clean();

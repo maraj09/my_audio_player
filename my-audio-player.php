@@ -122,6 +122,7 @@ add_action('admin_menu', 'map_custom_submenu_page');
 ////////////////////////////////////////////////////////
 function map_genarate_audio_shortcode($attr)
 {
+	ob_start();
 	if (!empty($attr['id'])) {
 		$id = $attr['id'];
 	}
@@ -136,7 +137,6 @@ function map_genarate_audio_shortcode($attr)
 	$audio_width = $audio['audio-width'];
 	$audio_btn = $audio['audio-btn'];
 	echo $audio_color;
-	ob_start();
 	?>
 	<a id="m1" class="  audio { loop:<?php  echo ((1 == $audio_repeat) ? 'true' : 'false') ?>  , inLine:<?php  echo ((0 == $audio_inline) ? 'true' : 'false') ?>, downloadable:<?php  echo ((1 == $audio_dwn) ? 'true' : 'false') ?>, skin:'<?php  echo $audio_color;?>', addShadow:<?php  echo ((1 == $audio_shadow) ? 'true' : 'false') ?>,width:<?php  echo $audio_width;?>  }" href="<?php echo esc_attr( $audio_url) ?>"><?php echo ( $audio_text) ?></a>
 			<?php

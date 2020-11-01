@@ -67,13 +67,14 @@ function map_register_my_map_myaudioplayer() {
 		"all_items" => __( "My Audio Player", "my-audio-player" ),
 		"add_new" => __( "Add Audio Player", "my-audio-player" ),
 		'add_new_item' => __( 'Add New Player', "my-audio-player" ),
+		'edit_item' => __('Edit Player',"my-audio-player"),
 	];
 
 	$args = [
 		"label" => __( "My Audio Players", "twentynineteen" ),
 		"labels" => $labels,
 		"description" => "",
-		"public" => true,
+		"public" => false,
 		"publicly_queryable" => true,
 		"show_ui" => true,
 		"show_in_rest" => true,
@@ -108,7 +109,6 @@ function map_custom_submenu_page() {
 
 function map_submenu_page_callback() {
 	echo '<div class="wrap"><div id="icon-tools" class="icon32"></div>';
-	//var_dump( print_r( get_post_meta( 612, 'add_audio_' , true ))) ;
     echo '<h2>Developer</h2>
     <h2>Md Maraj Rashid</h2>
     <h3>Basic Web Developer</h3>';
@@ -136,9 +136,10 @@ function map_genarate_audio_shortcode($attr)
 	$audio_shadow = $audio['audio-shadow'];
 	$audio_width = $audio['audio-width'];
 	$audio_btn = $audio['audio-btn'];
-	echo $audio_color;
+	$audio_time_show = $audio['audio-time-show'];
+	$audio_rew_show = $audio['audio-rew-show'];
 	?>
-	<a id="m1" class="  audio { loop:<?php  echo ((1 == $audio_repeat) ? 'true' : 'false') ?>  , inLine:<?php  echo ((0 == $audio_inline) ? 'true' : 'false') ?>, downloadable:<?php  echo ((1 == $audio_dwn) ? 'true' : 'false') ?>, skin:'<?php  echo $audio_color;?>', addShadow:<?php  echo ((1 == $audio_shadow) ? 'true' : 'false') ?>,width:<?php  echo $audio_width;?>  }" href="<?php echo esc_attr( $audio_url) ?>"><?php echo ( $audio_text) ?></a>
+	<a id="m1" class="  audio { loop:<?php  echo ((1 == $audio_repeat) ? 'true' : 'false') ?>  , inLine:<?php  echo ((0 == $audio_inline) ? 'true' : 'false') ?>, downloadable:<?php  echo ((1 == $audio_dwn) ? 'true' : 'false') ?>, skin:'<?php  echo $audio_color;?>', addShadow:<?php  echo ((1 == $audio_shadow) ? 'true' : 'false') ?>,width:<?php  echo $audio_width;?>,showTime:<?php  echo ((1 == $audio_time_show) ? 'true' : 'false') ?>,showRew:<?php  echo ((1 == $audio_rew_show) ? 'true' : 'false') ?>   }" href="<?php echo esc_attr( $audio_url) ?>"><?php echo ( $audio_text) ?></a>
 			<?php
 				if (1 == $audio_btn) { ?>
 					<button id="play" >play</button>
@@ -191,3 +192,72 @@ function map_columns_content_only_myaudioplayer($column_name, $post_ID)
 }
 add_filter('manage_myaudioplayer_posts_columns', 'map_columns_head_only_myaudioplayer', 10);
 add_action('manage_myaudioplayer_posts_custom_column', 'map_columns_content_only_myaudioplayer', 10, 2);
+///////////////////////////////////////////////////////////////////////////
+// Hide & Disabled View, Quick Edit and Preview Button
+///////////////////////////////////////////////////////////////////////////
+function map_remove_row_actions($idtions)
+{
+	global $post;
+	if ($post->post_type == 'myaudioplayer') {
+		unset($idtions['view']);
+		unset($idtions['inline hide-if-no-js']);
+	}
+	return $idtions;
+}
+if (is_admin()) {
+	add_filter('post_row_actions', 'map_remove_row_actions', 10, 2);
+}
+///////////////////////////////////////////////////////////////////////////
+// HIDE everything in PUBLISH metabox except Move to Trash & PUBLISH button
+///////////////////////////////////////////////////////////////////////////
+function map_hide_publishing_actions()
+{
+	$my_post_type = 'myaudioplayer';
+	global $post;
+	if ($post->post_type == $my_post_type) {
+		echo '
+                <style type="text/css">
+                    #misc-publishing-actions,
+                    #minor-publishing-actions{
+                        display:none;
+                    }
+                </style>
+            ';
+	}
+}
+add_action('admin_head-post.php', 'map_hide_publishing_actions');
+add_action('admin_head-post-new.php', 'map_hide_publishing_actions');
+//////////////////////////////////////////////////////////////////////////
+// change publish button to save.
+///////////////////////////////////////////////////////////////////////////
+function map_change_publish_button($translation, $text)
+{
+	if ('myaudioplayer' == get_post_type())
+	if ($text == 'Publish')
+	return 'Save';
+	
+	return $translation;
+}
+add_filter('gettext', 'map_change_publish_button', 10, 2);
+//////////////////////////////////////////////////////////////////////////
+// Remove post update massage and link 
+///////////////////////////////////////////////////////////////////////////
+function map_updated_messages($messages)
+{
+	$messages['myaudioplayer'][1] = __('Player Updated ');
+	return $messages;
+}
+add_filter('post_updated_messages', 'map_updated_messages');
+
+add_filter('admin_footer_text', 'map_admin_footer');
+function map_admin_footer($text)
+{
+	if ('myaudioplayer' == get_post_type()) {
+		$url = 'https://wordpress.org/support/plugin/html5-audio-player/reviews/?filter=5#new-post';
+		$text = sprintf(__('If you like <strong>Html5 Audio Player</strong> please leave us a <a href="%s" target="_blank">&#9733;&#9733;&#9733;&#9733;&#9733;</a> rating. Your Review is very important to us as it helps us to grow more. <a href="%s"> <i class="fas fa-share fa-3x"></i></a> ', 'my-audio-player'), $url,$url);
+
+	}
+	return $text;
+	
+	
+}

@@ -21,7 +21,6 @@ if (class_exists('CSF')) {
 	//
 	// Create a section
 	CSF::createSection($prefix, array(
-		'title' => __('upload your audio player', 'my-audio-player'),
 		'fields' => array(
 
 			//
@@ -51,6 +50,11 @@ if (class_exists('CSF')) {
 				),
 			),
 			array(
+				'id'   =>  'audio-btn',
+				'title' => __('Show Large Play/Pause Button', 'my-audio-player'),
+				'type' => 'checkbox',
+			),
+			array(
 				'id'   =>  'audio-inline',
 				'title' => __('Audio Start/Stop Button Position', 'my-audio-player'),
 				'type' => 'radio',
@@ -66,6 +70,18 @@ if (class_exists('CSF')) {
 				'type' => 'checkbox',
 			),
 			array(
+				'id'   =>  'audio-time-show',
+				'title' => __('Show Audio Player Time', 'my-audio-player'),
+				'type' => 'checkbox',
+				'default' => 1,
+			),
+			array(
+				'id'   =>  'audio-rew-show',
+				'title' => __('Show Audio Rewind Button', 'my-audio-player'),
+				'type' => 'checkbox',
+				'default' => 1,
+			),
+			array(
 				'id'   =>  'audio-shadow',
 				'title' => __('Show Shadow', 'my-audio-player'),
 				'type' => 'checkbox',
@@ -74,7 +90,7 @@ if (class_exists('CSF')) {
 				'id'   =>  'audio-width',
 				'title' => __('Width', 'my-audio-player'),
 				'type' => 'number',
-				'default' => 500
+				'default' => 500,
 			),
 			array(
 				'id'   =>  'audio-color',
@@ -89,11 +105,7 @@ if (class_exists('CSF')) {
 				),
 				'default' => 'blue'
 			),
-			array(
-				'id'   =>  'audio-btn',
-				'title' => __('Show Large Play/Pause Button', 'my-audio-player'),
-				'type' => 'checkbox',
-			),
+			
 
 		)
 	));
